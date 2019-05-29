@@ -17,7 +17,6 @@
     document.cookie = "AMP_EXP=amp-autocomplete";
     </script>
     <script async src="https://cdn.ampproject.org/v0.js"></script>
-    
 
     <script async custom-element="amp-bind" src="https://cdn.ampproject.org/v0/amp-bind-0.1.js"></script>
     <script async custom-element="amp-form" src="https://cdn.ampproject.org/v0/amp-form-0.1.js"></script>
@@ -26,15 +25,16 @@
     
     <script async>
       function handleTripChange (tripType) {
-        var returnDateElem =  document.getElementById('return-date-container');
-        if (tripType === "one-way")
-          {
+        var returnDateElem =  document.getElementById('range-date-picker');
+        var oneWayDateElem =  document.getElementById('range-date-picker-single');
+
+        if (tripType === "one-way") {
             returnDateElem.style.display = 'none';
-          }
-        else {
+            oneWayDateElem.style.display = 'flex';
+        } else {
           returnDateElem.style.display = 'flex';
+          oneWayDateElem.style.display = 'none';
         }
-        
       }
     </script>
   
@@ -67,6 +67,7 @@
 } */
       body {
         background: url("https://www.gannett-cdn.com/presto/2018/08/06/USAT/d7e9198a-b2fa-4ca6-b947-31c3751cc248-GettyImages-898660948.jpg?width=1280&quality=80") no-repeat top center;
+        background-size: cover;
       }
       
     #header {
@@ -130,12 +131,7 @@
         height: 926px;
       }
 
-      .search-box {
-        width: 620px;
-        margin-left: 128px;
-        margin-top: 128px;
-        border-radius: 2px;
-      }
+      
       
       .search-box  .welcome-text {
         padding: 16px;
@@ -156,15 +152,7 @@
         flex-wrap: wrap;
         box-sizing: border-box;
       }
-      .grid .col {
-        width: 50%;
-        padding: 8px;
-        box-sizing: border-box;
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        
-      }
+    
       .grid .align-right {
         justify-content: flex-end;
       }
@@ -270,11 +258,14 @@
       .search-widget .material-icons {
         color: #00a1de;
       }
+      
+      #range-date-picker-single {
+        display: none;
+      }
 
       
   .main-content {
-    padding: 16px;
-    height: 832px;
+    padding: 64px 16px;
     overflow: hidden;
   }
       .card-container {
@@ -290,6 +281,7 @@
         font-size: 14px;
         position: relative;
         margin-right: 80px;
+        margin-top: 190px;
       }
       .offer-card .astronaut {
         position: absolute;
@@ -320,7 +312,11 @@
         display:block;
         background-color: #fff;
         font-family: "Roboto", san-serif;
-        box-shadow: 0px 0px 4px 4px rgba(255, 255, 255,0.35)
+        box-shadow: 0px 0px 4px 4px rgba(255, 255, 255,0.35);
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        z-index:1;
       }
       
       footer ul {
@@ -350,25 +346,64 @@
       footer ul li:last-child:after {
           display: none;
       }
-@media screen and (max-width: 600px) {
+      
+      .search-box {
+        
+        width: 100%;
+        box-sizing: border-box;
+        margin: 32px 0 0;
+        border-radius: 2px;
+        padding: 16px;
+      }
+      .grid .col {
+        width: 100%;
+        
+        padding: 8px;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        
+      }
+      
+      
+@media screen and (min-width: 600px) {
   
     .search-box {
-      float: none;
-      width: 100%;
-      box-sizing: border-box;
-      margin: 32px 16px 0;
+      width: 620px;
+        margin-left: 32px;
     }
     .grid .col {
-      width: 100%;
+      width: 50%;
     }
   
-}
-@media screen and (min-width: 900px) {
   
-  body{
-    background-size: cover;
-  }
 }
+      
+      @media screen and (min-width: 600px) {
+        
+      }
+      @media screen and (min-width: 1000px) {
+        .search-box {
+        margin-top: 64px;
+        }
+        .offer-card {
+        margin-top: 0;
+        }
+        
+      }
+      @media screen and (min-width: 1150px) {
+        .search-box {
+        margin-left: 128px;
+        margin-top: 128px;
+      
+    }
+      }
+  
+    
+  
+}
+
   </style>
     <!-- Import other AMP Extensions here -->
   
@@ -465,7 +500,6 @@
               })"
             format="DD-MM-YYYY"
             open-after-select
-            min="2019-05-23"
             start-input-selector="#departure-date"
             end-input-selector="#return-date"
             class="example-picker space-between">
@@ -481,6 +515,25 @@
                 <input id="return-date" name="return-date" placeholder="Return date">
               </div>
             </div>
+          </amp-date-picker>
+            
+          <amp-date-picker
+            type="single"
+            mode="overlay"
+            id="range-date-picker-single"
+            on="select:AMP.setState({date1: event.date, dateType1: event.id})"
+
+            format="DD-MM-YYYY"
+            open-after-select
+            input-selector="#departure-date-single"
+            class="example-picker space-between">
+            <div class="col">
+              <div class="input-container">
+                <i class="material-icons">date_range</i>
+                <input id="departure-date-single" name="departure-date-single" placeholder="Departure date">
+              </div>
+            </div>
+            <div class="col"></div>
           </amp-date-picker>
             
           <div class="col">
@@ -536,31 +589,18 @@
         <div class="more-details">
           <a href="">more details</a>
         </div>
-        
         <div class="astronaut">
           <amp-img src="https://cdn.glitch.com/35b836da-8f90-4e13-9292-beddd183f90c%2Fastronaut.svg?1559086512867" width="304px" height="188px"></amp-img>
         </div>
       </div>
       </div>
-      
-      
     </div>
     <footer>
-    
-    <ul>
-        <li>
-            <span> Terms of service</span></li>
-        <li>
-            <span> Legal Information </span>
-        </li>
-        <li>
-            <span> © 2019 KLM </span>
-        </li>
-    </ul>
-
+      <ul>
+        <li><span> Terms of service</span></li>
+        <li><span> Legal Information </span></li>
+        <li><span> © 2019 KLM </span></li>
+      </ul>
     </footer>
-    
-    
   </body>
-
 </html>

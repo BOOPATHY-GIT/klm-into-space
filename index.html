@@ -287,6 +287,8 @@
         position: absolute;
         top: -165px;
         right: -80px;
+        transform: translatey(0px);
+	  animation: float 6s ease-in-out infinite;
       }
       .offer-card h2{
         margin: 24px 0;
@@ -306,6 +308,21 @@
         color: #fff;
         text-transform: uppercase;
       }
+
+      @keyframes float {
+	0% {
+		
+		transform: translatey(0px);
+	}
+	50% {
+		
+		transform: translatey(-20px);
+	}
+	100% {
+		
+		transform: translatey(0px);
+	}
+}
       
       
       footer {
